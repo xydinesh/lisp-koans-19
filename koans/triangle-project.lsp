@@ -17,9 +17,17 @@
 
 (define-condition triangle-error  (error) ())
 
+;; Checking error conditionas and then matching different types of trangles
 (defun triangle (a b c)
-  :write-me)
-
+  (let ((legs (sort (list a b c) #'>)))
+    (if (not ( > (reduce #'min legs) 0))
+      (error 'triangle-error)
+      (if ( >= (car legs) (reduce #'+ (cdr legs)))
+	(error 'triangle-error)))
+    (cond
+	((= a b c) :equilateral)
+	((or (= a b) (= a c) (= b c)) :isosceles)
+	(t :scalene))))
 
 (define-test test-equilateral-triangles-have-equal-sides
     (assert-equal :equilateral (triangle 2 2 2))
