@@ -49,9 +49,47 @@
 ;
 ; Your goal is to write the score method.
 
+(define-condition score-error (error) ())
+
+(defun check-1-or-5 (a)
+  (if (= a 1)
+    100
+    (if (= a 5)
+      50
+      0)))
+
+
 (defun score (dice)
-  ; You need to write this method
-)
+  (if (not (listp dice))
+    (error 'score-error))
+  (let ((sum 0) (state 0) (last-value 0) (copy-dice nil))
+    (setf copy-dice (copy-seq dice))
+    (sort copy-dice #'>)
+    (dolist (a copy-dice)
+      (cond
+	((and (= state 0) (/= last-value a))
+	 (setf last-value a)
+	 (setf sum (+ sum (check-1-or-5 a))))
+	((and (= state 0) (= last-value a))
+	 (setf last-value a)
+	 (setf state 1)
+	 (setf sum (+ sum (check-1-or-5 a))))
+	((and (= state 1) (/= last-value a))
+	 (setf last-value a)
+	 (setf state 0)
+	 (setf sum (+ sum (check-1-or-5 a))))
+	((and (= state 1) (= last-value a))
+	 (setf last-value a)
+	 (setf state 0)
+	 (if (= a 1)
+	   (setf sum (+ sum 800))
+	   (if (= a 5)
+	     (setf sum (+ sum 400))
+	     (setf sum (+ sum (* a 100))))))
+	(t (setf state 0))
+      ))
+    sum))
+	  
 
 (define-test test-score-of-an-empty-list-is-zero
     (assert-equal 0 (score nil)))
