@@ -74,7 +74,7 @@
     (loop for k being the hash-keys of n-table
            using (hash-value val)
 	   do
-	    (setf summed (+ summed (assign-values k val))))
+	    (incf summed (assign-values k val)))
     summed))
 
 (define-test test-score-of-an-empty-list-is-zero
