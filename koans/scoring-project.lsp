@@ -64,6 +64,8 @@
 	    (* 100 k)
 	    0))))))
 
+;; In this algorithm we cound how many times each number occurred in the list using a hash-table
+;; then use hash table to assign-values for each key.
 (defun score(dice)
   (if (not (listp dice))
     (error 'score-error))
